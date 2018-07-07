@@ -1,0 +1,13 @@
+--------------------------Dumbstaller Build Notes-------------------------------
+
+Build 0.1-b
+
+Welcome to the first ever build of the Dumbstaller!!!!!!
+
+- Auto python path script is not available!
+
+- A lot of things are still manually entered
+
+- Not system independent
+
+--------------------------------------------------------------------------------

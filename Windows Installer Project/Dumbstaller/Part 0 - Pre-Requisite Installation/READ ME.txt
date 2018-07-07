@@ -1,0 +1,10 @@
+INSTALL the programs from the INSTALL folder before doing anything!!!!!!!
+
+Pre-requisite_installation.py is a small program that check your Internet connection to make sure the program can run properly. 
+When it asks you to change your host name, you can refuse to do so by simply quit the program.
+
+To run this program:
+
+1. Open CMD AS AN ADMINISTRATOR
+2. Point the CMD to this directory using cd
+3. Run the program by typing python prerequisite_installation.py
