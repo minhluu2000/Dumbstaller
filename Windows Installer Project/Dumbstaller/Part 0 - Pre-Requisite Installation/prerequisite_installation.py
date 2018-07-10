@@ -8,11 +8,12 @@
 #-------------------------------------------------------------------------------
 
 # import space
-import os
-import subprocess
-import re
+import os, re, subprocess
+import admin
+from sys import exit # used to cleanly exit the script
 
-
+if not admin.isUserAdmin(): # if user is not admin then run as admin
+    admin.runAsAdmin()
 
 
 # a function called internet_check to check for internet connection
@@ -26,6 +27,7 @@ def internet_check():
         return False # if response value is 1, there isn't an internet connection
 
 
+
 # a function called hostname_change to change hostname
 # must run this as administrator as it has to call powershell for administrative
 # task (changing hostname is an administrative task)
@@ -37,7 +39,7 @@ def hostname_change(hostname):
 # make sure the hostname is acceptable by the OS
 def check_name(hostname):
 
-    pattern = r'[^A-Za-z0-9]'  # anything but letters
+    pattern = r'[^A-Za-z0-9]'  # anything but letters and numbers
 
     if not hostname: # empty string False
         return False
@@ -45,8 +47,6 @@ def check_name(hostname):
         return False
     else:  # if it contains just letters True
         return True
-True
-
 
 
 
@@ -56,23 +56,18 @@ def restart_computer():
 
 
 
-
 # main function
 def main():
 
-    print()
-    print("Welcome! This program will check your PC environment before you can install software.")
-    print()
+    print("\nWelcome! This program will check your PC environment before you can install software.\n")
 
     print("Check for an Internet connection...")
 
     if internet_check(): # if there is an Internet connection
-        print()
-        print("Internet connection detected!")
+        print("\nInternet connection detected!")
 
         # change host name and restart Windows
-        print()
-        print("Now, you need to think of a cool name for your PC!")
+        print("\nNow, you need to think of a cool name for your PC!")
         hostname = input("Please choose a name for your PC: ")
 
         # a small check to make sure the new host name is acceptable
@@ -80,27 +75,21 @@ def main():
             print("This name is unacceptable. Please try again.")
             hostname = input("Please choose a name for your PC: ")
 
-        print("Name accepted!")
+        print("Name accepted!\n\n")
         hostname_change(hostname) # change host name
-        print()
-        print()
         print("Pre-requisite check is finished!")
-        input("Press enter to continue...")
-        print()
-        print()
+        input("Press enter to continue...\n\n")
         print("If you want to change your PC name, please re-run this program.")
-        input("Press enter to continue...")
-        print()
-        print()
-        print("You must restart the computer before proceed to Part 1.")
+        input("Press enter to continue...\n\n")
+        print("You must restart the computer before proceeding to Part 1.")
         input("Press enter to restart...")
         restart_computer() # restart the PC
 
     else: # if there isn't an Internet connection,
-        print()
-        print("Internet connection NOT dectected!")
+        print("\nInternet connection NOT dectected!")
         print("This program CANNOT run without an internet connection.")
         input("Press enter to exit...")
+        exit() # Cleanly closes python script
 
 
 # run the program
