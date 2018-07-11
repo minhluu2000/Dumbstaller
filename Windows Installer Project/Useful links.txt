@@ -1,0 +1,2 @@
+Finding the path of the program that will execute from the command line in Windows: 
+https://stackoverflow.com/questions/4002819/finding-the-path-of-the-program-that-will-execute-from-the-command-line-in-windo
