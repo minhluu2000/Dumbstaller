@@ -46,22 +46,22 @@ def auto_network_config():
 
 # manual network config function
 def manual_network_config():
-    print()
+    pass
 
 # manual syntax check: make sure the data is written with correct syntax
 def syntax_check():
-    print()
+    pass
 
 
 
 # config export function: export the file
 def config_export():
-    print()
+    pass
 
 
 # main function
 def main():
-    print()
+    pass
 
 
 
