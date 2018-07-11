@@ -10,4 +10,5 @@ Welcome to the first ever build of the Dumbstaller!!!!!!
 
 - Not system independent
 
+- Not yet to find a way to update Windows properly
 --------------------------------------------------------------------------------
