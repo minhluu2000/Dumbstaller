@@ -35,9 +35,25 @@ for i in network_configs:
 # automatic network config function
 def auto_network_config():
     # create objects as entries for powershell
+    ip_address = ""
+    subnet_mask = ""
+    default_gateway = ""
+    dns_1 = ""
+    dns_2 = ""
+
     # compare the hostname with any entry in networkconfigdata.txt
     for i in network_config_elements:
-        if hostname == i[0]:
+        if hostname == i[0]: # if there is an entry, move the elements to discrete objects
+            ip_address = i[1]
+            subnet_mask = i[2]
+            default_gateway = i[3]
+            dns_1 = i[4]
+            dns_2 = i[5]
+        else:
+            return False
+
+
+
 
 
 
@@ -59,11 +75,12 @@ def config_export():
     pass
 
 
-# main function
+# main function (test for now)
 def main():
-    pass
-
-
+    if auto_network_config():
+        pass
+    else:
+        print("N/A")
 
 
 

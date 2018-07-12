@@ -1,4 +1,4 @@
-#-------------------------------psudocode---------------------------------------
+#-------------------------------pseudocode---------------------------------------
 # check running environment.
 #   the computer must connect to the internet. if not display a message.
 # change the name of the computer (ask user) and restart computer.
@@ -30,7 +30,7 @@ def internet_check():
 
 # a function called hostname_change to change hostname
 # must run this as administrator as it has to call powershell for administrative
-# task (changing hostname is an administrative task)
+# task (changing host name is an administrative task)
 def hostname_change(hostname):
     subprocess.call(['powershell.exe', "Rename-Computer -NewName " + hostname])
 
@@ -38,7 +38,6 @@ def hostname_change(hostname):
 
 # make sure the hostname is acceptable by the OS
 def check_name(hostname):
-
     pattern = r'[^A-Za-z0-9]'  # anything but letters and numbers
 
     if not hostname: # empty string False
@@ -66,24 +65,38 @@ def main():
     if internet_check(): # if there is an Internet connection
         print("\nInternet connection detected!")
 
-        # change host name and restart Windows
-        print("\nNow, you need to think of a cool name for your PC!")
-        hostname = input("Please choose a name for your PC: ")
+        # ask user if he/she wishes to change the host name
+        print("\nYou can exit the program and start Part 1 now if you don't want to change your host name.")
+        temp_input = input("Do you want to exit?(y/n): ").lower()
 
-        # a small check to make sure the new host name is acceptable
-        while check_name(hostname) == False: # keep asking until acceptable
-            print("This name is unacceptable. Please try again.")
+        # input check and final decision
+        while temp_input != "y" and temp_input != "n": # if input != y or n
+            print("Unacceptable input!")
+            temp_input = input("Do you want to exit?(y/n): ").lower()
+
+        if temp_input == "y": # if the user wants to exit
+            exit()
+
+        else: # if the user doesn't want to exit
+
+            # change host name and restart Windows
+            print("\nNow, you need to think of a cool name for your PC!")
             hostname = input("Please choose a name for your PC: ")
 
-        print("Name accepted!\n\n")
-        hostname_change(hostname) # change host name
-        print("Pre-requisite check is finished!")
-        input("Press enter to continue...\n\n")
-        print("If you want to change your PC name, please re-run this program.")
-        input("Press enter to continue...\n\n")
-        print("You must restart the computer before proceeding to Part 1.")
-        input("Press enter to restart...")
-        restart_computer() # restart the PC
+            # a small check to make sure the new host name is acceptable
+            while check_name(hostname) == False: # keep asking until acceptable
+                print("This name is unacceptable. Please try again.")
+                hostname = input("Please choose a name for your PC: ")
+
+            print("Name accepted!\n\n")
+            hostname_change(hostname) # change host name
+            print("Pre-requisite check is finished!")
+            input("Press enter to continue...\n")
+            print("If you want to change your PC name, please re-run this program.")
+            input("Press enter to continue...\n")
+            print("You must restart the computer before proceeding to Part 1.")
+            input("Press enter to restart...")
+            restart_computer() # restart the PC
 
     else: # if there isn't an Internet connection,
         print("\nInternet connection NOT dectected!")

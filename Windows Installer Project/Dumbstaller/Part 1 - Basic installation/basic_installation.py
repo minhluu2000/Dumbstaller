@@ -1,4 +1,4 @@
-#-------------------------------psudocode---------------------------------------
+#-------------------------------pseudocode---------------------------------------
 # activate Windows
 # give appropriate network configuration.
 #   give network config based on the host name.

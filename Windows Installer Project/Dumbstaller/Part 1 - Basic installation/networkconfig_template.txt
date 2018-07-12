@@ -9,9 +9,12 @@ The full notation example:
 	Alternate DNS server: 1.1.1.1
 
 The one to be imported to python:
-	0       , 1           , 2            , 3          , 4
-	hostname, ip ad       , submask      , main dns   , alternate dns
+	0      , 1          , 2           , 3         , 4     , 5
+	host   , ip ad      , submask     , def gw    , dns_1 , dns_2
 
-	someone , 192.168.1.69, 255.255.255.0, 192.168.1.1, 8.8.8.8, 1.1.1.1
+	someone,192.168.1.69,255.255.255.0,192.168.1.1,8.8.8.8,1.1.1.1
+
+
+Note: There should be no space for the imported format.
 
 
