@@ -57,7 +57,7 @@ def syntax_check():
 
 # config export function: export new data entry to the networkconfigdata.txt
 def config_export(hn, ip, submask, def_gate, dns_1, dns_2):
-    with open("networkconfigdata_test.txt", "a") as f:
+    with open("networkconfigdata.txt", "a") as f:
         f.write("\n" + hn + "," + ip + "," + submask + "," + def_gate + "," + dns_1 + "," + dns_2)
     f.close()
 
@@ -138,11 +138,44 @@ def main():
                     dns_2 = str(input("Secondary DNS: "))
                     network_config(net_mode ,ip_address, subnet_mask, default_gateway, dns_1, dns_2)
                     config_export(hostname, ip_address, subnet_mask, default_gateway, dns_1, dns_2)
+
+                    print("\nNetwork is configured successfully!\n")
+                    print("Here is the info: \n")
+                    print("IP Address: " + ip_address + "\nSubnet Mask: " + subnet_mask + "\nDefault Gateway: " + default_gateway + "\nPrimary DNS: " + dns_1 + "\nSecondary DNS: " + dns_2)
+
+                    input("Press enter to continue...\n")
+                    print("The program will exit.\nIf you already finished Windows update, please go to part 2.\nIf you haven't done Windows update, please run it now.\n")
+                    print("If you want to re-configure the network again, please run network_reset BEFORE re-running this program.")
+                    print("If you run this program before network_reset, the program will give you an error.\n")
+                    input("Press enter to exit...")
+                    exit()
+
                 else:
                     exit()
     elif mode == "m":
-        pass
+        ip_address = str(input("IP Address: "))
+        subnet_mask = input("Subnet Mask:  ")
+        default_gateway = str(input("Default Gateway: "))
+        dns_1 = str(input("Primary DNS: "))
+        dns_2 = str(input("Secondary DNS: "))
+        network_config(net_mode ,ip_address, subnet_mask, default_gateway, dns_1, dns_2)
 
+        for i in network_config_elements: # make sure the data is exported once, if the data is already there, don't do anything
+            if hostname == i[0]:
+                pass
+            else:
+                config_export(hostname, ip_address, subnet_mask, default_gateway, dns_1, dns_2)
+
+        print("\nNetwork is configured successfully!\n")
+        print("Here is the info: \n")
+        print("IP Address: " + ip_address + "\nSubnet Mask: " + subnet_mask + "\nDefault Gateway: " + default_gateway + "\nPrimary DNS: " + dns_1 + "\nSecondary DNS: " + dns_2)
+
+        input("Press enter to continue...\n")
+        print("The program will exit.\nIf you already finished Windows update, please go to part 2.\nIf you haven't done Windows update, please run it now.\n")
+        print("If you want to re-configure the network again, please run network_reset BEFORE re-running this program.")
+        print("If you run this program before network_reset, the program will give you an error.\n")
+        input("Press enter to exit...")
+        exit()
 main()
 
 #------------------------------Terminated---------------------------------------
