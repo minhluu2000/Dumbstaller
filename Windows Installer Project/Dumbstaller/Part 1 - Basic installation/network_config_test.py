@@ -48,10 +48,10 @@ def netmask_to_cidr(netmask):
 
 
 # automatic network config function
-def network_config(ip_address, subnet_mask, default_gateway, dns_1, dns_2):
+def network_config(ip, submask, def_gate, dns_1, dns_2, net_mode):
 
-    subprocess.call(['powershell.exe', r'New-NetIPAddress –InterfaceAlias “Ethernet”  –IPAddress "' + ip_address + r'" -PrefixLength ' + str(netmask_to_cidr(subnet_mask)) + r' -DefaultGateway ' + default_gateway])
-    subprocess.call(['powershell.exe', r'Set-DnsClientServerAddress -InterfaceAlias “Ethernet” -ServerAddresses ' + dns_1 + r', ' + dns_2])
+    subprocess.call(['powershell.exe', r'New-NetIPAddress –InterfaceAlias "' + net_mode + r'"  –IPAddress "' + ip + r'" -PrefixLength ' + str(netmask_to_cidr(submask)) + r' -DefaultGateway ' + def_gate])
+    subprocess.call(['powershell.exe', r'Set-DnsClientServerAddress -InterfaceAlias "' + net_mode + r'" -ServerAddresses ' + dns_1 + r', ' + dns_2])
 
 
 # manual syntax check: make sure the data is written with correct syntax
@@ -59,9 +59,14 @@ def syntax_check():
     pass
 
 
-# config export function: export the file
-def config_export():
-    pass
+# config export function: export new data entry to the networkconfigdata.txt
+def config_export(hn, ip, submask, def_gate, dns_1, dns_2):
+    with open("networkconfigdata_test.txt", "a") as f:
+        f.write("\n" + hn + "," + ip + "," + submask + "," + def_gate + "," + dns_1 + "," + dns_2)
+    f.close()
+
+
+
 
 #-------------------------------------------------------------------------------
 
@@ -77,7 +82,7 @@ def main():
         print("Invalid input!")
         mode = str(input("Auto or manual?(a/m): ").lower())
 
-    if mode == a:
+    if mode == "a":
         # only works when the host name matches with data from networkconfigdata.txt
         for i in network_config_elements:
             if hostname == i[0]: # if there is an entry, move the elements to discrete objects
@@ -87,22 +92,44 @@ def main():
                 dns_1 = str(i[4])
                 dns_2 = str(i[5])
                 network_config(ip_address, subnet_mask, default_gateway, dns_1, dns_2)
-            else:
-                print("There is no data entry that matches your host name!\n")
-                print("There ")
+            else: # if there is no matched data, ask the user to enter manually or exit the program
+                print("\nThere is no data entry that matches your host name!")
+                print("You can enter the network configuration manually.")
+                print("The data you enter will be saved.")
+                print("If you exit, the machine will be in DHCP mode.\n")
+
+                # ask user to enter manually or exit
                 mode = str(input("Do you want to enter manually or exit?(m/e): ")).lower()
 
-                while mode != "m" and mode != "e":
+                while mode != "m" and mode != "e": # input check
                     print("Invalid input!")
                     mode = str(input("Do you want to enter manually or exit?(m/e): ")).lower()
 
-                if mode == "m":
-                    ip_address = str(i[1])
-                    subnet_mask = str(i[2])
-                    default_gateway = str(i[3])
-                    dns_1 = str(i[4])
-                    dns_2 = str(i[5])
-                    network_config(ip_address, subnet_mask, default_gateway, dns_1, dns_2)
+                if mode == "m": # enter manually
+                    ip_address = str(input("IP Address: "))
+                    subnet_mask = input("Subnet Mask:  ")
+                    default_gateway = str(input("Default Gateway: "))
+                    dns_1 = str(input("Primary DNS: "))
+                    dns_2 = str(input("Secondary DNS: "))
+                    net_mode = str(input("Are you using Wi-Fi or Ethernet Cable?(w/c): "))
+
+                    while net_mode != "w" and net_mode != "c": # input check
+                        print("Invalid input!")
+                        net_mode = str(input("Are you using Wi-Fi or Ethernet Cable?(w/c): ")).lower()
+
+                    if net_mode == "w":
+                        network_config("Wi-Fi" ,ip_address, subnet_mask, default_gateway, dns_1, dns_2)
+
+
+                    if net_mode == "c":
+                        network_config("Ethernet", ip_address, subnet_mask, default_gateway, dns_1, dns_2)
+
+
+                    config_export(hostname, ip_address, subnet_mask, default_gateway, dns_1, dns_2)
+                else:
+                    exit()
+    elif mode == "m":
+        pass
 
 
 
