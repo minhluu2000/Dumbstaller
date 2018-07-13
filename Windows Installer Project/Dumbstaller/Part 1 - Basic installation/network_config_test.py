@@ -67,17 +67,45 @@ def config_export():
 
 # main function (test for now)
 def main():
-    # only works when the host name matches with data from networkconfigdata.txt
-     for i in network_config_elements:
-        if hostname == i[0]: # if there is an entry, move the elements to discrete objects
-            ip_address = str(i[1])
-            subnet_mask = str(i[2])
-            default_gateway = str(i[3])
-            dns_1 = str(i[4])
-            dns_2 = str(i[5])
-            network_config(ip_address, subnet_mask, default_gateway, dns_1, dns_2)
-        else:
-            print()
+
+    # welcome text
+    print("Welcome line...\n")
+    print("Welcome line...\n")
+    mode = str(input("Auto or manual?(a/m): ").lower())
+
+    while mode != "a" and mode != "m":
+        print("Invalid input!")
+        mode = str(input("Auto or manual?(a/m): ").lower())
+
+    if mode == a:
+        # only works when the host name matches with data from networkconfigdata.txt
+        for i in network_config_elements:
+            if hostname == i[0]: # if there is an entry, move the elements to discrete objects
+                ip_address = str(i[1])
+                subnet_mask = str(i[2])
+                default_gateway = str(i[3])
+                dns_1 = str(i[4])
+                dns_2 = str(i[5])
+                network_config(ip_address, subnet_mask, default_gateway, dns_1, dns_2)
+            else:
+                print("There is no data entry that matches your host name!\n")
+                print("There ")
+                mode = str(input("Do you want to enter manually or exit?(m/e): ")).lower()
+
+                while mode != "m" and mode != "e":
+                    print("Invalid input!")
+                    mode = str(input("Do you want to enter manually or exit?(m/e): ")).lower()
+
+                if mode == "m":
+                    ip_address = str(i[1])
+                    subnet_mask = str(i[2])
+                    default_gateway = str(i[3])
+                    dns_1 = str(i[4])
+                    dns_2 = str(i[5])
+                    network_config(ip_address, subnet_mask, default_gateway, dns_1, dns_2)
+
+
+
 
 main()
 
