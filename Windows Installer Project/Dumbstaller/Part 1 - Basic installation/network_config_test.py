@@ -33,13 +33,9 @@ network_config_elements = []  # list of network elements within a list of
 for i in network_configs:
     network_config_elements.append(i.split(","))
 
-##global ip_address
-##global subnet_mask
-##global default_gateway
-##global dns_1
-##global dns_2
 
-#-------------------------------------------------------------------------------
+#---------------------functions except for main functions-----------------------
+
 
 # netmask to cidr function
 # this is used for convert netmask (255.255.255.0) to cidr notation (24)
@@ -48,7 +44,7 @@ def netmask_to_cidr(netmask):
 
 
 # automatic network config function
-def network_config(ip, submask, def_gate, dns_1, dns_2, net_mode):
+def network_config(net_mode, ip, submask, def_gate, dns_1, dns_2):
 
     subprocess.call(['powershell.exe', r'New-NetIPAddress –InterfaceAlias "' + net_mode + r'"  –IPAddress "' + ip + r'" -PrefixLength ' + str(netmask_to_cidr(submask)) + r' -DefaultGateway ' + def_gate])
     subprocess.call(['powershell.exe', r'Set-DnsClientServerAddress -InterfaceAlias "' + net_mode + r'" -ServerAddresses ' + dns_1 + r', ' + dns_2])
@@ -66,23 +62,41 @@ def config_export(hn, ip, submask, def_gate, dns_1, dns_2):
     f.close()
 
 
-
-
 #-------------------------------------------------------------------------------
+
 
 # main function (test for now)
 def main():
 
     # welcome text
+    print("\nWelcome line...\n")
     print("Welcome line...\n")
-    print("Welcome line...\n")
-    mode = str(input("Auto or manual?(a/m): ").lower())
+
+
+    # temporary way to detect the right adapter for the network config function
+    net_mode_input = str(input("Are you using Wi-Fi or Ethernet Cable?(w/e): ")).lower()
+    net_mode = ""
+
+    while net_mode_input != "w" and net_mode_input != "e": # input check
+        print("Invalid input!")
+        net_mode_input = str(input("Are you using Wi-Fi or Ethernet Cable?(w/e): ")).lower()
+
+    if net_mode_input == "w":
+        net_mode = "Wi-Fi"
+
+
+    if net_mode_input == "e":
+        net_mode = "Ethernet"
+
+    # ask for auto or manual mode
+    mode = str(input("\nAuto or manual?(a/m): ").lower())
 
     while mode != "a" and mode != "m":
-        print("Invalid input!")
+        print("Invalid input!\n")
         mode = str(input("Auto or manual?(a/m): ").lower())
 
     if mode == "a":
+        print("\nConfiguring the network automatically...")
         # only works when the host name matches with data from networkconfigdata.txt
         for i in network_config_elements:
             if hostname == i[0]: # if there is an entry, move the elements to discrete objects
@@ -91,7 +105,18 @@ def main():
                 default_gateway = str(i[3])
                 dns_1 = str(i[4])
                 dns_2 = str(i[5])
-                network_config(ip_address, subnet_mask, default_gateway, dns_1, dns_2)
+                network_config(net_mode, ip_address, subnet_mask, default_gateway, dns_1, dns_2)
+                print("\nNetwork is configured successfully!\n")
+                print("Here is the info: \n")
+                print("IP Address: " + ip_address + "\nSubnet Mask: " + subnet_mask + "\nDefault Gateway: " + default_gateway + "\nPrimary DNS: " + dns_1 + "\nSecondary DNS: " + dns_2)
+
+                input("Press enter to continue...\n")
+                print("The program will exit.\nIf you already finished Windows update, please go to part 2.\nIf you haven't done Windows update, please run it now.\n")
+                print("If you want to re-configure the network again, please run network_reset BEFORE re-running this program.")
+                print("If you run this program before network_reset, the program will give you an error.\n")
+                input("Press enter to exit...")
+                exit()
+
             else: # if there is no matched data, ask the user to enter manually or exit the program
                 print("\nThere is no data entry that matches your host name!")
                 print("You can enter the network configuration manually.")
@@ -102,7 +127,7 @@ def main():
                 mode = str(input("Do you want to enter manually or exit?(m/e): ")).lower()
 
                 while mode != "m" and mode != "e": # input check
-                    print("Invalid input!")
+                    print("Invalid input!\n")
                     mode = str(input("Do you want to enter manually or exit?(m/e): ")).lower()
 
                 if mode == "m": # enter manually
@@ -111,32 +136,16 @@ def main():
                     default_gateway = str(input("Default Gateway: "))
                     dns_1 = str(input("Primary DNS: "))
                     dns_2 = str(input("Secondary DNS: "))
-                    net_mode = str(input("Are you using Wi-Fi or Ethernet Cable?(w/c): "))
-
-                    while net_mode != "w" and net_mode != "c": # input check
-                        print("Invalid input!")
-                        net_mode = str(input("Are you using Wi-Fi or Ethernet Cable?(w/c): ")).lower()
-
-                    if net_mode == "w":
-                        network_config("Wi-Fi" ,ip_address, subnet_mask, default_gateway, dns_1, dns_2)
-
-
-                    if net_mode == "c":
-                        network_config("Ethernet", ip_address, subnet_mask, default_gateway, dns_1, dns_2)
-
-
+                    network_config(net_mode ,ip_address, subnet_mask, default_gateway, dns_1, dns_2)
                     config_export(hostname, ip_address, subnet_mask, default_gateway, dns_1, dns_2)
                 else:
                     exit()
     elif mode == "m":
         pass
 
-
-
-
 main()
 
-
+#------------------------------Terminated---------------------------------------
 
 
 
