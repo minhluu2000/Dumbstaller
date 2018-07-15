@@ -10,6 +10,9 @@
 # if not, promp user to enter network config manually
 #   export the data to networkconfigdata.txt after finish
 
+
+#-----------------------------Things to add or fix------------------------------
+
 #-------------------------------------------------------------------------------
 
 # import
