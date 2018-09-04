@@ -16,6 +16,8 @@
 
 import socket, os, subprocess
 from platform import node
+import ifaddr
+
 
 #-------------------import data from networkconfigdata.txt----------------------
 """This is will be replaced with better a better database system in the future"""
@@ -51,13 +53,29 @@ class NetworkConfig:
         return sum([bin(int(x)).count('1') for x in self.ip4_subnet.split('.')])
 
     def network_config(self):
-        """This method deploys user network configurations through system-dependent PowerShell (for now)."""
-        subprocess.call(['powershell.exe', r'New-NetIPAddress –InterfaceAlias "' + net_mode + r'"  –IPAddress "' + ip + r'" -PrefixLength ' + str(netmask_to_cidr(submask)) + r' -DefaultGateway ' + def_gate])
-        subprocess.call(['powershell.exe', r'Set-DnsClientServerAddress -InterfaceAlias "' + net_mode + r'" -ServerAddresses ' + dns_1 + r', ' + dns_2])
+        """This method deploys user network configuration through system-dependent PowerShell (for now)."""
+        subprocess.call(['powershell.exe', "New-NetIPAddress –InterfaceAlias %s –IPAddress %s -PrefixLength %s -DefaultGateway %s" % (self.netmode, self.ip4, self.cidr, self.gateway)])
+        subprocess.call(['powershell.exe', "Set-DnsClientServerAddress -InterfaceAlias %s -ServerAddresses %s, %s" % (self.netmode, self.dns1, self.dns2)])
 
-    
+class InputCheck:
+    """This class does input checking for the program. It will warn user if a particular input is invalid."""
+    def __init__(self, user_input):
+        self.input = user_input
 
 
-hostA = NetworkConfig("192.168.1.10", "255.255.255.0", "192.168.1.1", "1.1.1.1", "8.8.8.8")
 
-print(hostA.netmask_to_cidr())
+adapters = ifaddr.get_adapters()
+print("Please choose your target network interface below:\n ")
+for i in range(len(adapters)):
+        print(i + 1, adapters[i].nice_name)
+
+adapter_choice = int(input("\nYour choice: "))
+
+
+
+host_network_config = NetworkConfig(str(adapters[0].ips[0].nice_name), "192.168.1.10", "255.255.255.0", "192.168.1.1", "1.1.1.1", "8.8.8.8")
+host_network_config.netmask_to_cidr()
+host_network_config.network_config()
+
+input("Enter...")
+
