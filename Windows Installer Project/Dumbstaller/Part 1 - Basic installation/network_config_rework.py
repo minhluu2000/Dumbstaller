@@ -17,12 +17,18 @@
 import socket, os, subprocess
 from platform import node
 import ifaddr
+import csv
+# import logging
 
+#-------------------------------------logger------------------------------------
+# create and configure logger
+# logging is under testing
+# LOG_FORMAT = "%(levelname)s %(asctime)s - %(message)s"
+# logging.basicConfig(filename = "network_config.log", level = logging.CRITICAL, format = LOG_FORMAT) # set to critical for testing
+# logger = logging.getLogger()
 
-#-------------------import data from networkconfigdata.txt----------------------
-"""This is will be replaced with better a better database system in the future"""
-# check the host name for auto config
-# hostname = node().lower()
+#-------------------import data from network_config.csv-------------------------
+"""A csv database system is under development to replace the old networkconfigdata.txt system"""
 
 # import networkconfigdata.txt file and make it easy to access
 # with open("networkconfigdata.txt", "r") as myfile:
@@ -38,6 +44,7 @@ class NetworkConfig:
     It is still under heavy development, so not many features are
     available yet."""
     def __init__(self, netmode, ip4, ip4_subnet, gateway, dns1, dns2):
+        self.hostname = node().lower()
         self.netmode = netmode
         self.ip4 = ip4
         self.ip4_subnet = ip4_subnet
@@ -47,8 +54,8 @@ class NetworkConfig:
     
     def netmask_to_cidr(self):
         """This method converts TCP/IP to CIDR form for the subnet mask."""
-        self.cidr = sum([bin(int(x)).count('1') for x in self.ip4_subnet.split('.')])
-        return self.cidr
+        cidr = sum([bin(int(x)).count('1') for x in self.ip4_subnet.split('.')])
+        return cidr
 
     def network_config(self):
         """This method deploys user network configuration through system-dependent PowerShell (for now). 
@@ -76,27 +83,30 @@ def network_config_help():
     pass
 
 #--------------------------------------main-------------------------------------
-def main():
-    print("Network Configuration Menu: \n1. Auto network config (check the database before using this or make sure you know what you're doing) \n2. Manual network config (with data saving) \n3. Manual network config (without data saving) \n4. Enable DHCP \n5. View known network configs (aka database) \n6. Help!!! IDK What I'm doing!")
+
+
+# def main():
+#     print("Network Configuration Menu: \n1. Auto network config (check the database before using this or make sure you know what you're doing) \n2. Manual network config (with data saving) \n3. Manual network config (without data saving) \n4. Enable DHCP \n5. View known network configs (aka database) \n6. Help!!! IDK What I'm doing!")
 
 
 
 
-    # adapters = ifaddr.get_adapters()
-    # print("Please choose your target network interface below:\n ")
-    # for i in range(len(adapters)):
-    #         print(i + 1, adapters[i].nice_name)
+adapters = ifaddr.get_adapters()
+#     # print("Please choose your target network interface below:\n ")
+#     # for i in range(len(adapters)):
+#     #         print(i + 1, adapters[i].nice_name)
 
-    # adapter_choice = int(input("\nYour choice: ")) - 1
-    # print(adapters[adapter_choice].ips[0].nice_name)
+adapter_choice = int(input("\nYour choice: ")) - 1
+#     # print(adapters[adapter_choice].ips[0].nice_name)
 
-    # host_network_config = NetworkConfig(str(adapters[adapter_choice].ips[0].nice_name), "192.168.1.233", "255.255.255.0", "192.168.1.1", "1.1.1.1", "8.8.8.8")
-    # # host_network_config.network_config()
+host_network_config = NetworkConfig(str(adapters[adapter_choice].ips[0].nice_name), "192.168.1.233", "255.255.255.", "192.168.1.1", "1.1.1.1", "8.8.8.8")
+print(host_network_config.hostname)
+#     # host_network_config.network_config()
 
-    # help(NetworkConfig)
+#     # help(NetworkConfig)
 
-    # input("Enter...")
+#     # input("Enter...")
 
 
 
-main()
+# main()
