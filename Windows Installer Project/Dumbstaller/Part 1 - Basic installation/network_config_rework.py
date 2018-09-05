@@ -31,14 +31,12 @@ import ifaddr
 # for i in network_configs:
 #     network_config_elements.append(i.split(","))
 
-#-------------------------------class and functions-----------------------------
+#------------------------------classes and functions----------------------------
 
 class NetworkConfig:
-    
-    """This class collects and stores data from networkconfigdata.txt.
-    This class is still under heavy development, so not many features are
+    """This class collects your network config data and output it to a database (if being configured manually).
+    It is still under heavy development, so not many features are
     available yet."""
-
     def __init__(self, netmode, ip4, ip4_subnet, gateway, dns1, dns2):
         self.netmode = netmode
         self.ip4 = ip4
@@ -48,39 +46,57 @@ class NetworkConfig:
         self.dns2 = dns2
     
     def netmask_to_cidr(self):
-
         """This method converts TCP/IP to CIDR form for the subnet mask."""
-        
         self.cidr = sum([bin(int(x)).count('1') for x in self.ip4_subnet.split('.')])
         return self.cidr
 
     def network_config(self):
-
         """This method deploys user network configuration through system-dependent PowerShell (for now). 
         It also converts TCP/IP to CIDR notation for subnet mask."""
-
         self.cidr = sum([bin(int(x)).count('1') for x in self.ip4_subnet.split('.')])
         subprocess.call(['powershell.exe', "New-NetIPAddress –InterfaceAlias %s –IPAddress %s -PrefixLength %s -DefaultGateway %s" % (self.netmode, self.ip4, self.cidr, self.gateway)])
         subprocess.call(['powershell.exe', "Set-DnsClientServerAddress -InterfaceAlias %s -ServerAddresses %s, %s" % (self.netmode, self.dns1, self.dns2)])
+    
+    def network_data_output(self):
+        """This method pushes manually configured network configuration
+        to a database for future automatic config."""
+        pass
+
+    def enable_dhcp(self):
+        """This method enable DHCP for your Windows PC"""
+        pass
 
 class InputCheck:
     """This class does input checking for the program. It will warn user if a particular input is invalid."""
     def __init__(self, user_input):
         self.input = user_input
 
+def network_config_help():
+    """This function explains briefly about the program"""
+    pass
+
+#--------------------------------------main-------------------------------------
+def main():
+    print("Network Configuration Menu: \n1. Auto network config (check the database before using this or make sure you know what you're doing) \n2. Manual network config (with data saving) \n3. Manual network config (without data saving) \n4. Enable DHCP \n5. View known network configs (aka database) \n6. Help!!! IDK What I'm doing!")
 
 
-adapters = ifaddr.get_adapters()
-print("Please choose your target network interface below:\n ")
-for i in range(len(adapters)):
-        print(i + 1, adapters[i].nice_name)
-
-adapter_choice = int(input("\nYour choice: "))
 
 
+    # adapters = ifaddr.get_adapters()
+    # print("Please choose your target network interface below:\n ")
+    # for i in range(len(adapters)):
+    #         print(i + 1, adapters[i].nice_name)
 
-host_network_config = NetworkConfig(str(adapters[0].ips[0].nice_name), "192.168.1.233", "255.255.255.0", "192.168.1.1", "1.1.1.1", "8.8.8.8")
-host_network_config.network_config()
+    # adapter_choice = int(input("\nYour choice: ")) - 1
+    # print(adapters[adapter_choice].ips[0].nice_name)
 
-input("Enter...")
+    # host_network_config = NetworkConfig(str(adapters[adapter_choice].ips[0].nice_name), "192.168.1.233", "255.255.255.0", "192.168.1.1", "1.1.1.1", "8.8.8.8")
+    # # host_network_config.network_config()
 
+    # help(NetworkConfig)
+
+    # input("Enter...")
+
+
+
+main()
