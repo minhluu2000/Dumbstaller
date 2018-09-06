@@ -28,7 +28,8 @@ import csv
 # logger = logging.getLogger()
 
 #-------------------import data from network_config.csv-------------------------
-"""A csv database system is under development to replace the old networkconfigdata.txt system"""
+"""A csv database system is under development to replace the 
+old networkconfigdata.txt system"""
 
 # import networkconfigdata.txt file and make it easy to access
 # with open("networkconfigdata.txt", "r") as myfile:
@@ -40,12 +41,12 @@ import csv
 #------------------------------classes and functions----------------------------
 
 class NetworkConfig:
-    """This class collects your network config data and output it to a database (if being configured manually).
-    It is still under heavy development, so not many features are
-    available yet."""
-    def __init__(self, netmode, ip4, ip4_subnet, gateway, dns1, dns2):
-        self.hostname = node().lower()
-        self.netmode = netmode
+    """This class collects your network config data and output it 
+    to a database (if being configured manually). It is still under 
+    heavy development, so not many features are available yet."""
+    def __init__(self, adapter, ip4, ip4_subnet, gateway, dns1, dns2):
+        self.hostname = node().lower() # retrive host name for auto network config detection, may move this to the main file
+        self.adapter = adapter
         self.ip4 = ip4
         self.ip4_subnet = ip4_subnet
         self.gateway = gateway
@@ -57,20 +58,28 @@ class NetworkConfig:
         cidr = sum([bin(int(x)).count('1') for x in self.ip4_subnet.split('.')])
         return cidr
 
-    def network_config(self):
-        """This method deploys user network configuration through system-dependent PowerShell (for now). 
-        It also converts TCP/IP to CIDR notation for subnet mask."""
-        self.cidr = sum([bin(int(x)).count('1') for x in self.ip4_subnet.split('.')])
-        subprocess.call(['powershell.exe', "New-NetIPAddress –InterfaceAlias %s –IPAddress %s -PrefixLength %s -DefaultGateway %s" % (self.netmode, self.ip4, self.cidr, self.gateway)])
-        subprocess.call(['powershell.exe', "Set-DnsClientServerAddress -InterfaceAlias %s -ServerAddresses %s, %s" % (self.netmode, self.dns1, self.dns2)])
-    
-    def network_data_output(self):
+    def net_data_output(self):
         """This method pushes manually configured network configuration
         to a database for future automatic config."""
         pass
 
     def enable_dhcp(self):
-        """This method enable DHCP for your Windows PC"""
+        """This method enable DHCP for your Windows PC. Careful, it also enables auto dns as well."""
+        subprocess.call(["powershell.exe", "Set-NetIPInterface -InterfaceAlias %s -Dhcp Enable" % (self.adapter)]) # enable dhcp
+        subprocess.call(["powershell.exe", "Remove-NetRoute -InterfaceAlias %s" % (self.adapter)]) # reset default gateway (might need some improvements)
+        subprocess.call(["powershell.exe", "Set-DnsClientServerAddress -InterfaceAlias %s -ResetServerAddresses" % (self.adapter)]) # reset dns
+        subprocess.call(["powershell.exe", "Restart-NetAdapter -Name %s" % (self.adapter)]) # restart adapter
+
+    def net_config(self):
+        """This method deploys user network configuration through system-dependent PowerShell (for now). 
+        It also converts TCP/IP to CIDR notation for subnet mask."""
+        self.cidr = sum([bin(int(x)).count('1') for x in self.ip4_subnet.split('.')]) # convert 
+        subprocess.call(["powershell.exe", "New-NetIPAddress –InterfaceAlias %s –IPAddress %s -PrefixLength %s -DefaultGateway %s" % (self.adapter, self.ip4, self.cidr, self.gateway)]) # change ip config
+        subprocess.call(["powershell.exe", "Set-DnsClientServerAddress -InterfaceAlias %s -ServerAddresses %s, %s" % (self.adapter, self.dns1, self.dns2)]) # change dns config
+        subprocess.call(["powershell.exe", "Restart-NetAdapter -Name %s" % (self.adapter)]) # restart network interface
+
+    def net_config_help(self):
+        """This function explains briefly about the program""" # might move this (method/function?) to main.py 
         pass
 
 class InputCheck:
@@ -78,9 +87,14 @@ class InputCheck:
     def __init__(self, user_input):
         self.input = user_input
 
-def network_config_help():
-    """This function explains briefly about the program"""
-    pass
+    def ipfcheck(self):
+        """This method checks IP format."""
+        pass
+
+    def gchoice(self):
+        """This method checks user general choices (char and num)""" 
+        pass
+
 
 #--------------------------------------main-------------------------------------
 
@@ -99,8 +113,10 @@ adapters = ifaddr.get_adapters()
 adapter_choice = int(input("\nYour choice: ")) - 1
 #     # print(adapters[adapter_choice].ips[0].nice_name)
 
-host_network_config = NetworkConfig(str(adapters[adapter_choice].ips[0].nice_name), "192.168.1.233", "255.255.255.", "192.168.1.1", "1.1.1.1", "8.8.8.8")
-print(host_network_config.hostname)
+hostnetconfig = NetworkConfig(str(adapters[adapter_choice].ips[0].nice_name), "192.168.1.233", "255.255.255.0", "192.168.1.1", "1.1.1.1", "8.8.8.8")
+hostnetconfig.enable_dhcp()
+# hostnetconfig.network_config()
+print(hostnetconfig.hostname)
 #     # host_network_config.network_config()
 
 #     # help(NetworkConfig)
