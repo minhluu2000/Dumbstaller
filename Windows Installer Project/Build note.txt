@@ -12,3 +12,19 @@ Welcome to the first ever build of the Dumbstaller!!!!!!
 
 - Not yet to find a way to update Windows properly
 --------------------------------------------------------------------------------
+
+Build 0.2-b
+
+Welcome back! This patch marked the new era for the Dumbstaller
+The project has been revived after being abandoned for 2 months with A LOT of changes!
+
+- Completely new, cleaner, more efficient, and more secured network configurator is being built at a fast rate.
+
+- Improved in the program design, automation, error preventions (still no error handling yet), and system-independent (still needs tons of improvements on this field)
+
+- A brand new data import and export system using the csv extension (the network configurator will be reworked in the future to use a more secured and more complex data handling system)
+
+- Partially found a way to deal with Windows Update
+
+--------------------------------------------------------------------------------
+ 
