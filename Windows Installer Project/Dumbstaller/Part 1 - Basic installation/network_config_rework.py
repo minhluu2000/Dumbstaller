@@ -42,8 +42,7 @@ old networkconfigdata.txt system"""
 
 class NetworkConfig:
     """This class collects your network config data and output it 
-    to a database (if being configured manually). It is still under 
-    heavy development, so not many features are available yet."""
+    to a database (if being the network is configured manually)."""
     def __init__(self, adapter, ip4, ip4_subnet, gateway, dns1, dns2):
         self.hostname = node().lower() # retrive host name for auto network config detection, may move this to the main file
         self.adapter = adapter
@@ -61,6 +60,10 @@ class NetworkConfig:
     def net_data_output(self):
         """This method pushes manually configured network configuration
         to a database for future automatic config."""
+        pass
+
+    def net_data_input(self):
+        """This method pull data from a database for auto network config."""
         pass
 
     def enable_dhcp(self):
