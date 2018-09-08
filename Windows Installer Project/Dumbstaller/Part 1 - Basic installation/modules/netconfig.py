@@ -2,12 +2,11 @@ import subprocess # call powershell.exe
 from platform import node # check host name
 import csv # import and export network config data
 from pathlib import Path # analyze WindowsPath
-import re
 
 
 class NetworkDataHandler:
     """This class handle import and export network data to a database (csv)"""
-    def data_receiver(self, host, adapter, ip4, ip4_subnet, gateway, dns1, dns2):
+    def __init__(self, host, adapter, ip4, ip4_subnet, gateway, dns1, dns2):
         """This method receives data passed from NetworkConfig class"""
         self.hostname = host
         self.adapter = adapter
@@ -47,9 +46,9 @@ class NetworkDataHandler:
 
     def search_data(self, search_data):
                 result = [] # search result holder
-                for row in self.data:
-                    if isinstance(row[0], search_data):
-                        result.append(self.data[row])
+                for i in range(len(self.data)):
+                    if self.data[i][0] == search_data:
+                        result.append(self.data[i])
                 return result
 
 
