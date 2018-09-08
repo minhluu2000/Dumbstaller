@@ -1,8 +1,3 @@
-
-
-
-
-
 def looper(func, fail_msg):
     while True:
         flag = func()
