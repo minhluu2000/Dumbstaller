@@ -1,4 +1,3 @@
-ECHO off
-Powershell.exe -executionpolicy RemoteSigned
-Powershell.exe Import-Module PSWindowsUpdate
-Powershell.exe Install-Module PSWindowsUpdate
+powershell -ExecutionPolicy ByPass -Command Install-Module PSWindowsUpdate
+powershell -ExecutionPolicy ByPass -Command Get-WUInstall -MicrosoftUpdate -AcceptAll -AutoReboot
+cmd /k
