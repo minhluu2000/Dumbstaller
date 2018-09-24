@@ -144,6 +144,9 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+# __pycache__
+__pycache__/
+
 
 <<<<<<< HEAD
 # End of https://www.gitignore.io/api/python,windows,visualstudio,visualstudiocode
